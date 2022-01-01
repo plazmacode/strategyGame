@@ -41,7 +41,7 @@ namespace strategyGame.Classes
             MapActive = false;
             Map = new Province[24, 20]; //BIG MAP, BIG LAG
             sprites = new Texture2D[1];
-            provinceScale = 1.1f;
+            provinceScale = 1f;
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
         }
@@ -80,7 +80,8 @@ namespace strategyGame.Classes
         public static void OnResize()
         {
             oldOffset = offset;
-            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2, (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
+            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * (int)(provinceSize * provinceScale) / 2,
+                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * (int)(provinceSize * provinceScale) / 2));
             MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
 
         }
@@ -98,8 +99,8 @@ namespace strategyGame.Classes
 
         public static void Build()
         {
-            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize * provinceScale / 2,
-                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize * provinceScale / 2));
+            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * (int)(provinceSize * provinceScale) / 2,
+                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * (int)(provinceSize * provinceScale) / 2));
             MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
 
             for (int i = 0; i < Map.GetLength(0); i++)

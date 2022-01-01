@@ -173,12 +173,15 @@ namespace strategyGame.Classes
 
         /// <summary>
         /// Changes the province to a capital province
+        /// <br>Suffix = City</br>
+        /// <br>Bonus = True</br>
+        /// <br>BonusDistnace = 15</br
         /// </summary>
         public void SetCapital()
         {
             this.suffix = "City";
             this.bonus = true;
-            this.bonusDistance = 3;
+            this.bonusDistance = 15;
         }
 
         /// <summary>
