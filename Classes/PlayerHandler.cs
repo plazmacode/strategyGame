@@ -16,12 +16,15 @@ namespace strategyGame.Classes
         {
             Player player1 = new Player(Color.Blue, "player1");
             Player player2 = new Player(Color.Red, "player2");
+            Player player3 = new Player(Color.Green, "player3");
 
-            playerList.Add("player1",player1);
-            playerList.Add("player2",player2);
+            playerList.Add("player1", player1);
+            playerList.Add("player2", player2);
+            playerList.Add("player3", player3);
         }
 
-        public static void UpdatePlayers(GameTime gameTime) {
+        public static void UpdatePlayers(GameTime gameTime)
+        {
             foreach (Player player in PlayerList.Values)
             {
                 player.Update(gameTime);
@@ -30,6 +33,14 @@ namespace strategyGame.Classes
             {
                 MapHandler.ClearMap();
                 MapHandler.Build();
+            }
+
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.Space))
+            {
+                if (MapHandler.HightlightProp.SelectedProvince != null)
+                {
+                    MapHandler.HightlightProp.SelectedProvince.GetBonus();
+                }
             }
         }
     }

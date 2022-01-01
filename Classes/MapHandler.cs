@@ -16,7 +16,10 @@ namespace strategyGame.Classes
         private static Vector2 offset;
         private static Vector2 oldOffset;
         private static bool mapActive;
+
+        private static List<string> prefixList = new List<string>();
         private static List<string> nameList = new List<string>();
+        private static List<string> suffixList = new List<string>();
 
         private static Hightlight hightlight = new Hightlight();
 
@@ -27,7 +30,9 @@ namespace strategyGame.Classes
         public static Hightlight HightlightProp { get => hightlight; set => hightlight = value; }
         public static int ProvinceSize { get => provinceSize; set => provinceSize = value; }
         public static List<string> NameList { get => nameList; set => nameList = value; }
+        public static List<string> PrefixList { get => prefixList; set => prefixList = value; }
         public static bool MapActive { get => mapActive; set => mapActive = value; }
+        public static List<string> SuffixList { get => suffixList; set => suffixList = value; }
 
         static MapHandler()
         {
@@ -40,6 +45,9 @@ namespace strategyGame.Classes
 
         private static void LoadNames()
         {
+            PrefixList.Add("New");
+            PrefixList.Add("Old");
+
             NameList.Add("testName1");
             NameList.Add("testName2");
             NameList.Add("testName3");
@@ -50,6 +58,11 @@ namespace strategyGame.Classes
             NameList.Add("testName8");
             NameList.Add("testName9");
             NameList.Add("testName10");
+
+            suffixList.Add("Canyon");
+            suffixList.Add("Valley");
+            suffixList.Add("Hill");
+            suffixList.Add("Plain");
         }
 
         public static void LoadContent(ContentManager content)
@@ -102,6 +115,8 @@ namespace strategyGame.Classes
             map[0, 0].SetCapital();
             map[map.GetLength(0) - 1, map.GetLength(1) - 1].Owner = "player2";
             map[map.GetLength(0) - 1, map.GetLength(1) - 1].SetCapital();
+            map[0, map.GetLength(1) - 1].Owner = "player3";
+            map[0, map.GetLength(1) - 1].SetCapital();
         }
 
         public static void Update()

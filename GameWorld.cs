@@ -162,16 +162,20 @@ namespace strategyGame.Classes
             //UI
             Vector2 mouseHover = new Vector2(mouseState.Position.X -20, mouseState.Position.Y -30);
 
-            UIHandler.UpdateText();
+            UIHandler.UpdateUI();
 
             foreach (UIElement ui in UIList)
             {
                 _spriteBatch.DrawString(Arial, ui.StaticText + ui.Text, ui.Position, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
             }
 
+            //show province name on hover
+            //TODO: show different values depending on map mode
             if (MapHandler.HightlightProp.HoverProvince != null)
             {
-                _spriteBatch.DrawString(Arial, MapHandler.HightlightProp.HoverProvince.Name, mouseHover, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
+                Province selected = MapHandler.HightlightProp.HoverProvince;
+                string text = String.Format("{0} {1} {2}", selected.Prefix, selected.Name, selected.Suffix);
+                _spriteBatch.DrawString(Arial, text, mouseHover, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
             }
 
 

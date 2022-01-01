@@ -51,52 +51,32 @@ namespace strategyGame.Classes
                         if (province.ArrayPosition.X > 0)
                         {
                             Province spread1 = MapHandler.Map[(int)province.ArrayPosition.X - 1, (int)province.ArrayPosition.Y];
-                            //Don't re-spread thereby allowing new province to contiue spreading.
-                            //New provinces have a controlledSince, variable to prevent the map from being instantly controlled
 
-                            //Alternative owner != this.Owner
-                            if (spread1.Owner == null)
-                            {
-                                spread1.BonusDistance += province.BonusDistance - 1;
-                                spread1.Color = this.color;
-                                spread1.Owner = this.name;
-                                spread1.ControlledSince = gameTime.TotalGameTime.TotalSeconds;
-                            }
+                            SpreadNext(spread1);
                         }
                         //RIGHT
                         if (province.ArrayPosition.X < MapHandler.Map.GetLength(0) - 1)
                         {
                             Province spread1 = MapHandler.Map[(int)province.ArrayPosition.X + 1, (int)province.ArrayPosition.Y];
-                            //Don't re-spread thereby allowing new province to contiue spreading.
-                            //New provinces have a controlledSince, variable to prevent the map from being instantly controlled
-                            if (spread1.Owner == null)
-                            {
-                                spread1.BonusDistance += province.BonusDistance - 1;
-                                spread1.Color = this.color;
-                                spread1.Owner = this.name;
-                                spread1.ControlledSince = gameTime.TotalGameTime.TotalSeconds;
-                            }
+                            SpreadNext(spread1);
                         }
                         //UP
                         if (province.ArrayPosition.Y > 0)
                         {
                             Province spread1 = MapHandler.Map[(int)province.ArrayPosition.X, (int)province.ArrayPosition.Y - 1];
-                            //Don't re-spread thereby allowing new province to contiue spreading.
-                            //New provinces have a controlledSince, variable to prevent the map from being instantly controlled
-                            if (spread1.Owner == null)
-                            {
-                                spread1.BonusDistance += province.BonusDistance - 1;
-                                spread1.Color = this.color;
-                                spread1.Owner = this.name;
-                                spread1.ControlledSince = gameTime.TotalGameTime.TotalSeconds;
-                            }
+                            SpreadNext(spread1);
                         }
                         //DOWN
                         if (province.ArrayPosition.Y < MapHandler.Map.GetLength(1) - 1)
                         {
                             Province spread1 = MapHandler.Map[(int)province.ArrayPosition.X , (int)province.ArrayPosition.Y + 1];
-                            //Don't re-spread thereby allowing new province to contiue spreading.
-                            //New provinces have a controlledSince, variable to prevent the map from being instantly controlled
+                            SpreadNext(spread1);
+                        }
+
+                        void SpreadNext(Province spread1)
+                        {
+                            //New provinces have a value: controlledSince, to prevent the map from being instantly controlled
+
                             if (spread1.Owner == null)
                             {
                                 spread1.BonusDistance += province.BonusDistance - 1;
@@ -104,6 +84,15 @@ namespace strategyGame.Classes
                                 spread1.Owner = this.name;
                                 spread1.ControlledSince = gameTime.TotalGameTime.TotalSeconds;
                             }
+                            //Take other players provinces
+                            //Doesn't work properly yet
+                            //if (spread1.Owner != this.name)
+                            //{
+                            //    spread1.BonusDistance = 1;
+                            //    spread1.Color = this.color;
+                            //    spread1.Owner = this.name;
+                            //    spread1.ControlledSince = gameTime.TotalGameTime.TotalSeconds;
+                            //}
                         }
                     }
                 }

@@ -16,11 +16,14 @@ namespace strategyGame.Classes
             GameWorld.UIListProp.Add(new UIElement("Owner: ", "ownerName", "text", 0, 112));
             GameWorld.UIListProp.Add(new UIElement("Controlled since: ", "controlledText", "text", 0, 128));
             GameWorld.UIListProp.Add(new UIElement("Bonus: ", "bonusText", "text", 0, 144));
-            GameWorld.UIListProp.Add(new UIElement("Bonus Distance: ", "bonusDistanceText", "text", 0, 1160));
+            GameWorld.UIListProp.Add(new UIElement("Bonus Distance: ", "bonusDistanceText", "text", 0, 160));
+
+
+            GameWorld.UIListProp.Add(new UIElement("Add Bonus", "bonusButton", "button", 0, 180));
 
         }
 
-        public static void UpdateText()
+        public static void UpdateUI()
         {
             //TODO make this code better looking
             foreach (UIElement ui in GameWorld.UIListProp)
@@ -28,7 +31,7 @@ namespace strategyGame.Classes
                 Province selected = MapHandler.HightlightProp.SelectedProvince;
                 if (ui.Name == "provinceName" && selected != null)
                 {
-                    ui.Text = selected.Name;
+                    ui.Text = String.Format("{0} {1} {2}", selected.Prefix, selected.Name, selected.Suffix);
                 }
 
                 if (ui.Name == "provinceCoords" && selected != null)
@@ -56,19 +59,26 @@ namespace strategyGame.Classes
 
                 if (ui.Name == "bonusText" && selected != null)
                 {
-                    ui.Text = "Bonus: " + selected.Bonus.ToString();
+                    ui.Text = selected.Bonus.ToString();
                 }
 
                 if (ui.Name == "bonusDistanceText" && selected != null)
                 {
-                    ui.Text = "Bonus Distance: " + selected.BonusDistance.ToString();
+                    ui.Text = selected.BonusDistance.ToString();
+                }
+
+                if (ui.Name == "bonusButton" && selected != null)
+                {
+                    if (GameWorld.MouseStateProp.LeftButton == ButtonState.Pressed && ui.CollisionBoxProp.Contains(GameWorld.MouseStateProp.Position))
+                    {
+                        selected.GetBonus();
+                    }                    
                 }
 
                 if (selected == null)
                 {
                     ui.Text = "";
                 }
-
             }
         }
     }

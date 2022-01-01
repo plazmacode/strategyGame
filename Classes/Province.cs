@@ -15,6 +15,8 @@ namespace strategyGame.Classes
         private Rectangle provinceRect;
         private Vector2 arrayPosition;
         private string name;
+        private string prefix;
+        private string suffix;
         Random random;
         private string owner;
         private Color color;
@@ -31,6 +33,8 @@ namespace strategyGame.Classes
         public double ControlledSince { get => controlledSince; set => controlledSince = value; }
         public bool Bonus { get => bonus; set => bonus = value; }
         public int BonusDistance { get => bonusDistance; set => bonusDistance = value; }
+        public string Prefix { get => prefix; set => prefix = value; }
+        public string Suffix { get => suffix; set => suffix = value; }
 
         public Province(int x, int y, Texture2D sprite)
         {
@@ -98,13 +102,17 @@ namespace strategyGame.Classes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void OnClick()
         {
             MapHandler.HightlightProp.SelectedProvince = this;
-            this.BonusDistance = 3;
-            this.bonus = true;
         }
 
+        /// <summary>
+        /// Gives the province a name and resources
+        /// </summary>
         private void GenerateProvince()
         {
             //chance of province giving more land in beginning
@@ -115,22 +123,75 @@ namespace strategyGame.Classes
                 this.BonusDistance = 3;
                 this.bonus = true;
             }
-
-            Name = GenerateName();
+            prefix = GenerateName("prefix");
+            name = GenerateName("name");
+            suffix = GenerateName("suffix");
         }
 
-        private string GenerateName()
+        /// <summary>
+        /// Returns string of place names of type: prefix, name and suffix
+        /// </summary>
+        /// <param name="type">prefix, name, suffix</param>
+        /// <returns></returns>
+        private string GenerateName(string type)
         {
-            int randomNumber = random.Next(0, MapHandler.NameList.Count);
+            int randomName = random.Next(0, MapHandler.NameList.Count);
+            int randomPrefix = random.Next(0, MapHandler.PrefixList.Count);
+            int randomSuffix = random.Next(0, MapHandler.SuffixList.Count);
+            if (type == "name")
+            {
+                return MapHandler.NameList[randomName];
+            }
+            else if (type == "prefix")
+            {
+                //20% chance of prefix
+                int prefixChance = random.Next(0, 5);
+                if (prefixChance == 0)
+                {
+                    return MapHandler.PrefixList[randomPrefix];
+                } else
 
-            return MapHandler.NameList[randomNumber];
+                return "";
+            }
+            else if (type == "suffix")
+            {
+                //50% chance of suffix
+                int prefixChance = random.Next(0, 1);
+                if (prefixChance == 0)
+                {
+                    return MapHandler.SuffixList[randomSuffix];
+                }
+                else
+                    return "";
+            }
+            else
+            {
+                return "wrong type";
+            }
+
         }
 
+        /// <summary>
+        /// Changes the province to a capital province
+        /// </summary>
         public void SetCapital()
         {
+            this.suffix = "City";
             this.bonus = true;
             this.bonusDistance = 3;
         }
 
+        /// <summary>
+        /// Changes the province to a bonus province
+        /// <br>Suffix = Town</br>
+        /// <br>Bonus = True</br>
+        /// <br>BonusDistnace = 3</br>
+        /// </summary>
+        public void GetBonus()
+        {
+            this.suffix = "Town";
+            this.bonus = true;
+            this.bonusDistance = 3;
+        }
     }
 }
