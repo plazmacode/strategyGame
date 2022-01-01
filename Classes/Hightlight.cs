@@ -36,5 +36,10 @@ namespace strategyGame.Classes
             
         }
 
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, origin, MapHandler.ProvinceScale, SpriteEffects.None, layerDepth);
+        }
+
     }
 }

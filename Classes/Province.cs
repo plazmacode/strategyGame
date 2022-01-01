@@ -42,10 +42,10 @@ namespace strategyGame.Classes
             random = new Random();
             GenerateProvince();
             this.sprite = sprite;
-            scale = 1.0f;
+            scale = MapHandler.ProvinceScale;
             layerDepth = 0.2f;
             Color = Color.White;
-            controlledSince = 0; //0 means it is unowned
+            controlledSince = -1; //-1 means it is unowned or capital
         }
 
 
@@ -62,7 +62,7 @@ namespace strategyGame.Classes
         public void OnResize()
         {
             Position = Position - MapHandler.OldOffset + MapHandler.Offset;
-            ProvinceRect = new Rectangle((int)Position.X, (int)Position.Y, MapHandler.ProvinceSize, MapHandler.ProvinceSize);
+            ProvinceRect = new Rectangle((int)Position.X, (int)Position.Y, (int)(MapHandler.ProvinceSize * MapHandler.ProvinceScale), (int)(MapHandler.ProvinceSize * MapHandler.ProvinceScale));
         }
 
         public override void Update(GameTime gameTime)
@@ -73,7 +73,7 @@ namespace strategyGame.Classes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, Position, null, Color, rotation, origin, scale, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(sprite, Position, null, Color, rotation, origin, MapHandler.ProvinceScale, SpriteEffects.None, layerDepth);
         }
 
         private void CheckHighlight()

@@ -13,6 +13,7 @@ namespace strategyGame.Classes
         private static Province[,] map; //10x10 map
         private static Texture2D[] sprites;
         private static int provinceSize;
+        private static float provinceScale;
         private static Vector2 offset;
         private static Vector2 oldOffset;
         private static bool mapActive;
@@ -33,12 +34,14 @@ namespace strategyGame.Classes
         public static List<string> PrefixList { get => prefixList; set => prefixList = value; }
         public static bool MapActive { get => mapActive; set => mapActive = value; }
         public static List<string> SuffixList { get => suffixList; set => suffixList = value; }
+        public static float ProvinceScale { get => provinceScale; set => provinceScale = value; }
 
         static MapHandler()
         {
             MapActive = false;
-            Map = new Province[32, 24]; //BIG MAP, BIG LAG
+            Map = new Province[24, 20]; //BIG MAP, BIG LAG
             sprites = new Texture2D[1];
+            provinceScale = 1.1f;
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
         }
@@ -71,14 +74,14 @@ namespace strategyGame.Classes
             {
                 sprites[i] = content.Load<Texture2D>("province");
             }
-            ProvinceSize = sprites[0].Width; //assuming all provinces are squares and have same size as first province texture
+            ProvinceSize = (int)(sprites[0].Width * provinceScale); //assuming all provinces are squares and have same size as first province texture
         }
 
         public static void OnResize()
         {
             oldOffset = offset;
             offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2, (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
-            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
+            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
 
         }
 
@@ -95,8 +98,9 @@ namespace strategyGame.Classes
 
         public static void Build()
         {
-            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2, (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
-            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
+            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize * provinceScale / 2,
+                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize * provinceScale / 2));
+            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
 
             for (int i = 0; i < Map.GetLength(0); i++)
             {
@@ -105,8 +109,8 @@ namespace strategyGame.Classes
                     int x =  i;
                     int y = j;
                     Province province = new Province(x, y, sprites[0]); //x, y sends the position in the map[] array
-                    province.Position = new Vector2(provinceSize * x, provinceSize * y) + Offset; //x, y sets the correct position
-                    province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, ProvinceSize, ProvinceSize);
+                    province.Position = new Vector2((int)(provinceScale * provinceSize) * x, (int)(provinceScale * provinceSize) * y) + Offset; //x, y sets the correct position
+                    province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, (int)(ProvinceSize * provinceScale), (int)(ProvinceSize * provinceScale));
                     Map[i, j] = province;
                     GameWorld.Instantiate(province);
                 }
