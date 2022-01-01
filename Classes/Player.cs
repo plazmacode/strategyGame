@@ -17,7 +17,7 @@ namespace strategyGame.Classes
         {
             this.Name = name;
             this.Color = color;
-            SpreadTime = 100;
+            SpreadTime = 40;
         }
 
         public string Name { get => name; set => name = value; }

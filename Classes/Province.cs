@@ -36,7 +36,7 @@ namespace strategyGame.Classes
         {
             ArrayPosition = new Vector2(x, y);
             random = new Random();
-            Name = GenerateName();
+            GenerateProvince();
             this.sprite = sprite;
             scale = 1.0f;
             layerDepth = 0.2f;
@@ -101,17 +101,27 @@ namespace strategyGame.Classes
         private void OnClick()
         {
             MapHandler.HightlightProp.SelectedProvince = this;
+            this.BonusDistance = 3;
+            this.bonus = true;
+        }
+
+        private void GenerateProvince()
+        {
+            //chance of province giving more land in beginning
+            int bonusChance = random.Next(0, 15);
+
+            if (bonusChance == 0)
+            {
+                this.BonusDistance = 3;
+                this.bonus = true;
+            }
+
+            Name = GenerateName();
         }
 
         private string GenerateName()
         {
             int randomNumber = random.Next(0, MapHandler.NameList.Count);
-
-            if (randomNumber == 0)
-            {
-                Bonus = true;
-                BonusDistance = 2;
-            }
 
             return MapHandler.NameList[randomNumber];
         }

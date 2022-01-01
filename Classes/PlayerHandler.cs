@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,8 +17,6 @@ namespace strategyGame.Classes
             Player player1 = new Player(Color.Blue, "player1");
             Player player2 = new Player(Color.Red, "player2");
 
-            player2.SpreadTime = 300;
-
             playerList.Add("player1",player1);
             playerList.Add("player2",player2);
         }
@@ -26,6 +25,11 @@ namespace strategyGame.Classes
             foreach (Player player in PlayerList.Values)
             {
                 player.Update(gameTime);
+            }
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.R))
+            {
+                MapHandler.ClearMap();
+                MapHandler.Build();
             }
         }
     }

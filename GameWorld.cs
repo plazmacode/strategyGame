@@ -14,7 +14,7 @@ namespace strategyGame.Classes
         private SpriteBatch _spriteBatch;
         private static SpriteFont arial;
         private static MouseState mouseState;
-        private static KeyState keyState;
+        private static KeyboardState keyState;
         private FrameCounter _frameCounter = new FrameCounter();
 
         public static List<GameObject> gameObjects = new List<GameObject>();
@@ -39,7 +39,7 @@ namespace strategyGame.Classes
         public static List<string> DebugTexts { get => debugTexts; set => debugTexts = value; }
         public static SpriteFont Arial { get => arial; set => arial = value; }
         public static Vector2 OldScreenSize { get => oldScreenSize; set => oldScreenSize = value; }
-        public static KeyState KeyStateProp { get => keyState; set => keyState = value; }
+        public static KeyboardState KeyStateProp { get => keyState; set => keyState = value; }
 
         public GameWorld()
         {
@@ -103,7 +103,7 @@ namespace strategyGame.Classes
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             MouseStateProp = Mouse.GetState();
-            KeyStateProp = KeyState.GetState();
+            KeyStateProp = Keyboard.GetState();
 
             PlayerHandler.UpdatePlayers(gameTime);
             MapHandler.Update();

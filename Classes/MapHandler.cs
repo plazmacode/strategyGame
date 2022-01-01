@@ -32,7 +32,7 @@ namespace strategyGame.Classes
         static MapHandler()
         {
             MapActive = false;
-            Map = new Province[24, 16]; //BIG MAP, BIG LAG
+            Map = new Province[32, 24]; //BIG MAP, BIG LAG
             sprites = new Texture2D[1];
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
@@ -45,6 +45,11 @@ namespace strategyGame.Classes
             NameList.Add("testName3");
             NameList.Add("testName4");
             NameList.Add("testName5");
+            NameList.Add("testName6");
+            NameList.Add("testName7");
+            NameList.Add("testName8");
+            NameList.Add("testName9");
+            NameList.Add("testName10");
         }
 
         public static void LoadContent(ContentManager content)
@@ -62,6 +67,17 @@ namespace strategyGame.Classes
             offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2, (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
             MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
 
+        }
+
+        public static void ClearMap()
+        {
+            foreach (GameObject obj in GameWorld.gameObjects)
+            {
+                if (obj is Province)
+                {
+                    GameWorld.Destroy(obj);
+                }
+            }
         }
 
         public static void Build()
