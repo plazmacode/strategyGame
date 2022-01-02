@@ -22,6 +22,7 @@ namespace strategyGame.Classes
         private Color color;
         private bool bonus; //TODO: rename bonus variables
         private int bonusDistance;
+        private bool canSpread;
 
         private List<Building> buildingList = new List<Building>();
 
@@ -35,6 +36,7 @@ namespace strategyGame.Classes
         public int BonusDistance { get => bonusDistance; set => bonusDistance = value; }
         public string Prefix { get => prefix; set => prefix = value; }
         public string Suffix { get => suffix; set => suffix = value; }
+        public bool CanSpread { get => canSpread; set => canSpread = value; }
 
         public Province(int x, int y, Texture2D sprite)
         {
@@ -207,7 +209,7 @@ namespace strategyGame.Classes
                 this.sprite = MapHandler.Sprites[3];
                 this.suffix = "City";
                 this.bonus = true;
-                this.bonusDistance = 15;
+                this.bonusDistance = 8;
             }
             if (t == "town" && randomNumber < chance)
             {
@@ -223,6 +225,11 @@ namespace strategyGame.Classes
                 this.bonus = true;
                 this.bonusDistance = 3;
             }
+            if (this.Owner != null)
+            {
+                canSpread = true;
+            }
+            MapHandler.GeneratingMap = true;
         }
     }
 }

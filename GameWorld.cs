@@ -55,6 +55,8 @@ namespace strategyGame.Classes
             ScreenSize = new Vector2(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
+            //_graphics.SynchronizeWithVerticalRetrace = false; //Unlocks FPS
+            //this.IsFixedTimeStep = false;
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -78,7 +80,7 @@ namespace strategyGame.Classes
         {
             arial = Content.Load<SpriteFont>("arial");
             cameraPosition = Vector2.Zero;
-            PlayerHandler.CreatePlayers();
+            //PlayerHandler.CreatePlayers();
             UIHandler.LoadUI();
 
             MapHandler.LoadContent(Content);
@@ -184,6 +186,7 @@ namespace strategyGame.Classes
             }
 
             DebugTexts.Add(ZoomScale.ToString());
+            GameWorld.DebugTexts.Add("MapHandler.GeneratingMap: " + MapHandler.GeneratingMap.ToString());
             //Draw extra debug texts
             for (int i = 0; i < DebugTexts.Count; i++)
             {

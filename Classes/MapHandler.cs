@@ -18,6 +18,7 @@ namespace strategyGame.Classes
         private static Vector2 offset;
         private static Vector2 oldOffset;
         private static bool mapActive;
+        private static bool generatingMap;
 
         private static List<string> genericPrefixList = new List<string>();
         private static List<string> genericNameList = new List<string>();
@@ -46,6 +47,7 @@ namespace strategyGame.Classes
         public static List<string> RealNameList { get => realNameList; set => realNameList = value; }
         public static List<string> GenericPrefixList { get => genericPrefixList; set => genericPrefixList = value; }
         public static List<string> GenericInfixList { get => genericInfixList; set => genericInfixList = value; }
+        public static bool GeneratingMap { get => generatingMap; set => generatingMap = value; }
 
         static MapHandler()
         {
@@ -187,6 +189,7 @@ namespace strategyGame.Classes
 
         public static void Build()
         {
+            generatingMap = true;
             offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2,
                 (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
             offset = offset + (GameWorld.CameraPosition * GameWorld.ZoomScale);
@@ -205,7 +208,8 @@ namespace strategyGame.Classes
                     GameWorld.Instantiate(province);
                 }
             }
-            
+            PlayerHandler.CreatePlayers();
+
             foreach (Player player in PlayerHandler.PlayerList.Values)
             {
                 if (player.X != -1)
