@@ -14,7 +14,7 @@ namespace strategyGame.Classes
 
         public Hightlight()
         {
-            layerDepth = 0.8f;
+            layerDepth = 0.5f;
             scale = 0.5f;
         }
 

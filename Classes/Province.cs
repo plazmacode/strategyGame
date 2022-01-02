@@ -115,16 +115,12 @@ namespace strategyGame.Classes
         /// </summary>
         private void GenerateProvince()
         {
-            //chance of province giving more land
-            int bonusChance = random.Next(0, 25);
-
             prefix = GenerateName("prefix");
             name = GenerateName("name");
             suffix = GenerateName("suffix");
-            if (bonusChance == 0)
-            {
-                this.GetBonus();
-            }
+
+            this.SetBonus(3, "Village");
+            this.SetBonus(1, "Town");
         }
 
         /// <summary>
@@ -134,18 +130,37 @@ namespace strategyGame.Classes
         /// <returns></returns>
         private string GenerateName(string type)
         {
-            int randomName = random.Next(0, MapHandler.NameList.Count);
+            //Only give the name an infix if it uses a generic name.
+            //This is because the names in the realNameList already might have an infix
+            int randomName = random.Next(0, MapHandler.GenericNameList.Count);
+            int randomRealName = random.Next(0, MapHandler.RealNameList.Count);
             int randomPrefix = random.Next(0, MapHandler.PrefixList.Count);
+            int randomInfix = random.Next(0, MapHandler.GenericInfixList.Count);
             int randomSuffix = random.Next(0, MapHandler.SuffixList.Count);
             if (type == "name")
             {
-                return MapHandler.NameList[randomName];
+                int realNameChance = random.Next(0, 100);
+                if (realNameChance < 3)
+                {
+                    return MapHandler.RealNameList[randomRealName];
+                } else
+                {
+                    int infixChance = random.Next(0, 100);
+                    if (infixChance < 80)
+                    {
+                        return MapHandler.GenericNameList[randomName] + MapHandler.GenericInfixList[randomInfix];
+                    }
+                    else
+                    {
+                        return MapHandler.GenericNameList[randomName];
+                    }
+                }
             }
             else if (type == "prefix")
             {
                 //20% chance of prefix
-                int prefixChance = random.Next(0, 5);
-                if (prefixChance == 0)
+                int prefixChance = random.Next(0, 100);
+                if (prefixChance < 30)
                 {
                     return MapHandler.PrefixList[randomPrefix];
                 } else
@@ -155,8 +170,8 @@ namespace strategyGame.Classes
             else if (type == "suffix")
             {
                 //50% chance of suffix
-                int prefixChance = random.Next(0, 1);
-                if (prefixChance == 0)
+                int prefixChance = random.Next(0, 100);
+                if (prefixChance < 10)
                 {
                     return MapHandler.SuffixList[randomSuffix];
                 }
@@ -169,26 +184,37 @@ namespace strategyGame.Classes
             }
 
         }
-
         /// <summary>
-        /// Changes the province to a capital province
+        /// Changes the province to a bonus province based on chance and type
+        /// <para>Chances the suffix</para>
         /// </summary>
-        public void SetCapital()
+        /// <param name="chance">Chance of province getting the bonus 0-100%</param>
+        /// <param name="type">Type of bonus, such as "city"</param>
+        public void SetBonus(int chance, string type)
         {
-            this.suffix = "City";
-            this.bonus = true;
-            this.bonusDistance = 10;
-        }
-
-        /// <summary>
-        /// Changes the province to a bonus province
-        /// </summary>
-        public void GetBonus()
-        {
-            this.sprite = MapHandler.Sprites[1];
-            this.suffix = "Town";
-            this.bonus = true;
-            this.bonusDistance = 4;
+            int randomNumber = random.Next(0, 101);
+            string t = type.ToLower();
+            if (t == "capital")
+            {
+                this.sprite = MapHandler.Sprites[3];
+                this.suffix = "City";
+                this.bonus = true;
+                this.bonusDistance = 15;
+            }
+            if (t == "town" && randomNumber < chance)
+            {
+                this.sprite = MapHandler.Sprites[2];
+                this.suffix = "Town";
+                this.bonus = true;
+                this.bonusDistance = 5;
+            }
+            if (t == "village" && randomNumber < chance)
+            {
+                this.sprite = MapHandler.Sprites[1];
+                this.suffix = "Village";
+                this.bonus = true;
+                this.bonusDistance = 3;
+            }
         }
     }
 }

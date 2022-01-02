@@ -74,8 +74,8 @@ namespace strategyGame.Classes
         {
             arial = Content.Load<SpriteFont>("arial");
 
-            PlayerHandler.CreatePlayers();
 
+            PlayerHandler.CreatePlayers();
             UIHandler.LoadUI();
 
             MapHandler.LoadContent(Content);

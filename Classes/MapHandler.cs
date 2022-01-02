@@ -18,8 +18,11 @@ namespace strategyGame.Classes
         private static Vector2 oldOffset;
         private static bool mapActive;
 
+        private static List<string> genericPrefixList = new List<string>();
+        private static List<string> genericNameList = new List<string>();
+        private static List<string> genericInfixList = new List<string>();
         private static List<string> prefixList = new List<string>();
-        private static List<string> nameList = new List<string>();
+        private static List<string> realNameList = new List<string>();
         private static List<string> suffixList = new List<string>();
 
         private static Hightlight hightlight = new Hightlight();
@@ -30,18 +33,20 @@ namespace strategyGame.Classes
         public static Rectangle MapRect { get => mapRect; set => mapRect = value; }
         public static Hightlight HightlightProp { get => hightlight; set => hightlight = value; }
         public static int ProvinceSize { get => provinceSize; set => provinceSize = value; }
-        public static List<string> NameList { get => nameList; set => nameList = value; }
+        public static List<string> GenericNameList { get => genericNameList; set => genericNameList = value; }
         public static List<string> PrefixList { get => prefixList; set => prefixList = value; }
         public static bool MapActive { get => mapActive; set => mapActive = value; }
         public static List<string> SuffixList { get => suffixList; set => suffixList = value; }
         public static float ProvinceScale { get => provinceScale; set => provinceScale = value; }
         public static Texture2D[] Sprites { get => sprites; set => sprites = value; }
+        public static List<string> RealNameList { get => realNameList; set => realNameList = value; }
+        public static List<string> GenericPrefixList { get => genericPrefixList; set => genericPrefixList = value; }
+        public static List<string> GenericInfixList { get => genericInfixList; set => genericInfixList = value; }
 
         static MapHandler()
         {
-            MapActive = false;
             Map = new Province[80, 60]; //Exceed 160x100 and it might start lagging, depending on province texture
-            Sprites = new Texture2D[2];
+            MapActive = false; //Used for highlight
             provinceScale = 1f;
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
@@ -49,37 +54,88 @@ namespace strategyGame.Classes
 
         private static void LoadNames()
         {
+            genericPrefixList.Add("East");
+            genericPrefixList.Add("West");
+            genericPrefixList.Add("Mount");
+            genericPrefixList.Add("Great");
+            genericPrefixList.Add("High");
+
             PrefixList.Add("New");
             PrefixList.Add("Old");
             PrefixList.Add("Grand");
 
-            //TODO add generics and place real world names in different list
-            NameList.Add("York");
-            NameList.Add("Amsterdam");
-            NameList.Add("Copenhagen");
-            NameList.Add("Berlin");
-            NameList.Add("London");
-            NameList.Add("Istanbul");
-            NameList.Add("Tokyo");
-            NameList.Add("Beijing");
-            NameList.Add("Delhi");
-            NameList.Add("Cairo");
-            NameList.Add("Kinshasa");
-            NameList.Add("Chicago");
-            NameList.Add("Bogota");
-            NameList.Add("Quito");
-            NameList.Add("Toronto");
+            //generic names also a kind of prefix
+            GenericNameList.Add("Shef");
+            GenericNameList.Add("Clif");
+            GenericNameList.Add("Bleak");
+            GenericNameList.Add("Chester");
+            GenericNameList.Add("Inver");
+            GenericNameList.Add("Cape");
+            GenericNameList.Add("York");
+            GenericNameList.Add("Card");
+            GenericNameList.Add("Swan");
+            GenericNameList.Add("Herm");
+            GenericNameList.Add("Eas");
+            GenericNameList.Add("Wel");
+            GenericNameList.Add("Tel");
+            GenericNameList.Add("Lich");
+            GenericNameList.Add("Can");
+            GenericNameList.Add("Mil");
+            GenericNameList.Add("New");
+            GenericNameList.Add("Old");
+            GenericNameList.Add("Snare");
+            GenericNameList.Add("Whitting");
+            GenericNameList.Add("Stoke");
+            GenericNameList.Add("Elm");
+
+            //real names
+            RealNameList.Add("York");
+            RealNameList.Add("Amsterdam");
+            RealNameList.Add("Copenhagen");
+            RealNameList.Add("Berlin");
+            RealNameList.Add("London");
+            RealNameList.Add("Istanbul");
+            RealNameList.Add("Tokyo");
+            RealNameList.Add("Beijing");
+            RealNameList.Add("Delhi");
+            RealNameList.Add("Cairo");
+            RealNameList.Add("Kinshasa");
+            RealNameList.Add("Chicago");
+            RealNameList.Add("Bogota");
+            RealNameList.Add("Quito");
+            RealNameList.Add("Toronto");
 
             suffixList.Add("Canyon");
             suffixList.Add("Valley");
             suffixList.Add("Hill");
             suffixList.Add("Plain");
+            suffixList.Add("Plain");
+
+            GenericInfixList.Add("field");
+            GenericInfixList.Add("hull");
+            GenericInfixList.Add("berg");
+            GenericInfixList.Add("hill");
+            GenericInfixList.Add("hall");
+            GenericInfixList.Add("ford");
+            GenericInfixList.Add("ham");
+            GenericInfixList.Add("minster");
+            GenericInfixList.Add("shaw");
+            GenericInfixList.Add("ton");
+            GenericInfixList.Add("ing");
+            GenericInfixList.Add("dale");
+            GenericInfixList.Add("thorpe");
+            GenericInfixList.Add("thwaite");
+            GenericInfixList.Add("nell");
+            GenericInfixList.Add("by");
+            GenericInfixList.Add("stone");
+            GenericInfixList.Add("ock");
         }
 
         public static void LoadContent(ContentManager content)
         {
+            Sprites = new Texture2D[4];
             //make sure you have the textures ad set the sprites size in the static constructor
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < sprites.Length; i++)
             {
                 //province +: small, mini, micro
                 //For extra small use collisionTexture
@@ -127,14 +183,15 @@ namespace strategyGame.Classes
                     GameWorld.Instantiate(province);
                 }
             }
-            map[0, 0].Owner = "player1";
-            map[0, 0].SetCapital();
-            map[map.GetLength(0) - 1, map.GetLength(1) - 1].Owner = "player2";
-            map[map.GetLength(0) - 1, map.GetLength(1) - 1].SetCapital();
-            map[0, map.GetLength(1) - 1].Owner = "player3";
-            map[0, map.GetLength(1) - 1].SetCapital();
-            map[map.GetLength(0) -1, 0].Owner = "player4";
-            map[map.GetLength(0) - 1, 0].SetCapital();
+            
+            foreach (Player player in PlayerHandler.PlayerList.Values)
+            {
+                if (player.X != -1)
+                {
+                    map[player.X, player.Y].Owner = player.Name;
+                    map[player.X, player.Y].SetBonus(0, "capital");
+                }
+            }
         }
 
         public static void Update()

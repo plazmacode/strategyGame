@@ -71,7 +71,7 @@ namespace strategyGame.Classes
                 {
                     if (GameWorld.MouseStateProp.LeftButton == ButtonState.Pressed && ui.CollisionBoxProp.Contains(GameWorld.MouseStateProp.Position))
                     {
-                        selected.GetBonus();
+                        selected.SetBonus(100, "town");
                     }                    
                 }
 

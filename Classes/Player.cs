@@ -12,9 +12,34 @@ namespace strategyGame.Classes
         private string name;
         private float spreadTime;
         private int nextSpread;
+        private int x;
+        private int y;
 
+        /// <summary>
+        /// Creates a player with a color and name, x and y location must be changed elsewhere.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="name"></param>
         public Player(Color color, string name)
         {
+            //x and y is set somewhere else
+            this.x = -1;
+            this.y = -1;
+            this.Name = name;
+            this.Color = color;
+            SpreadTime = 40;
+        }
+        /// <summary>
+        /// Creates a player with a color, name and a position on the map
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="name"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public Player(Color color, string name, int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
             this.Name = name;
             this.Color = color;
             SpreadTime = 40;
@@ -24,6 +49,8 @@ namespace strategyGame.Classes
         public Color Color { get => color; set => color = value; }
         public float SpreadTime { get => spreadTime; set => spreadTime = value; }
         public int NextSpread { get => nextSpread; set => nextSpread = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
 
         public  void LoadContent(ContentManager content)
         {
