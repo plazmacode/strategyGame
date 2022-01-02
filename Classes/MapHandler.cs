@@ -35,12 +35,13 @@ namespace strategyGame.Classes
         public static bool MapActive { get => mapActive; set => mapActive = value; }
         public static List<string> SuffixList { get => suffixList; set => suffixList = value; }
         public static float ProvinceScale { get => provinceScale; set => provinceScale = value; }
+        public static Texture2D[] Sprites { get => sprites; set => sprites = value; }
 
         static MapHandler()
         {
             MapActive = false;
-            Map = new Province[24, 20]; //BIG MAP, BIG LAG
-            sprites = new Texture2D[1];
+            Map = new Province[80, 60]; //Exceed 160x100 and it might start lagging, depending on province texture
+            Sprites = new Texture2D[2];
             provinceScale = 1f;
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
@@ -50,17 +51,24 @@ namespace strategyGame.Classes
         {
             PrefixList.Add("New");
             PrefixList.Add("Old");
+            PrefixList.Add("Grand");
 
-            NameList.Add("testName1");
-            NameList.Add("testName2");
-            NameList.Add("testName3");
-            NameList.Add("testName4");
-            NameList.Add("testName5");
-            NameList.Add("testName6");
-            NameList.Add("testName7");
-            NameList.Add("testName8");
-            NameList.Add("testName9");
-            NameList.Add("testName10");
+            //TODO add generics and place real world names in different list
+            NameList.Add("York");
+            NameList.Add("Amsterdam");
+            NameList.Add("Copenhagen");
+            NameList.Add("Berlin");
+            NameList.Add("London");
+            NameList.Add("Istanbul");
+            NameList.Add("Tokyo");
+            NameList.Add("Beijing");
+            NameList.Add("Delhi");
+            NameList.Add("Cairo");
+            NameList.Add("Kinshasa");
+            NameList.Add("Chicago");
+            NameList.Add("Bogota");
+            NameList.Add("Quito");
+            NameList.Add("Toronto");
 
             suffixList.Add("Canyon");
             suffixList.Add("Valley");
@@ -70,11 +78,14 @@ namespace strategyGame.Classes
 
         public static void LoadContent(ContentManager content)
         {
-            for (int i = 0; i < 1; i++)
+            //make sure you have the textures ad set the sprites size in the static constructor
+            for (int i = 0; i < 2; i++)
             {
-                sprites[i] = content.Load<Texture2D>("province");
+                //province +: small, mini, micro
+                //For extra small use collisionTexture
+                Sprites[i] = content.Load<Texture2D>("provinceSmall" + i);
             }
-            ProvinceSize = (int)(sprites[0].Width * provinceScale); //assuming all provinces are squares and have same size as first province texture
+            ProvinceSize = (int)(Sprites[0].Width * provinceScale); //assuming all provinces are squares and have same size as first province texture
         }
 
         public static void OnResize()
@@ -109,7 +120,7 @@ namespace strategyGame.Classes
                 {
                     int x =  i;
                     int y = j;
-                    Province province = new Province(x, y, sprites[0]); //x, y sends the position in the map[] array
+                    Province province = new Province(x, y, Sprites[0]); //x, y sends the position in the map[] array
                     province.Position = new Vector2((int)(provinceScale * provinceSize) * x, (int)(provinceScale * provinceSize) * y) + Offset; //x, y sets the correct position
                     province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, (int)(ProvinceSize * provinceScale), (int)(ProvinceSize * provinceScale));
                     Map[i, j] = province;
@@ -122,6 +133,8 @@ namespace strategyGame.Classes
             map[map.GetLength(0) - 1, map.GetLength(1) - 1].SetCapital();
             map[0, map.GetLength(1) - 1].Owner = "player3";
             map[0, map.GetLength(1) - 1].SetCapital();
+            map[map.GetLength(0) -1, 0].Owner = "player4";
+            map[map.GetLength(0) - 1, 0].SetCapital();
         }
 
         public static void Update()

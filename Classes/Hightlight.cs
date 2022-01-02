@@ -15,7 +15,7 @@ namespace strategyGame.Classes
         public Hightlight()
         {
             layerDepth = 0.8f;
-            scale = 1.0f;
+            scale = 0.5f;
         }
 
         internal Province SelectedProvince { get => selectedProvince; set => selectedProvince = value; }
@@ -38,7 +38,7 @@ namespace strategyGame.Classes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, origin, MapHandler.ProvinceScale, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(sprite, Position, null, Color.White, rotation, origin, scale, SpriteEffects.None, layerDepth);
         }
 
     }

@@ -170,12 +170,14 @@ namespace strategyGame.Classes
             }
 
             //show province name on hover
+            //TODO: Hold ctrl or shift for more info
             //TODO: show different values depending on map mode
             if (MapHandler.HightlightProp.HoverProvince != null)
             {
                 Province selected = MapHandler.HightlightProp.HoverProvince;
                 string text = String.Format("{0} {1} {2}", selected.Prefix, selected.Name, selected.Suffix);
                 _spriteBatch.DrawString(Arial, text, mouseHover, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
+                DrawRect(new Rectangle((int)mouseHover.X, (int)mouseHover.Y, (int)Arial.MeasureString(text).X+12,24),Color.Gray,0.6f);
             }
 
 
@@ -187,6 +189,11 @@ namespace strategyGame.Classes
             DebugTexts.Clear();
 
             _spriteBatch.End();
+        }
+
+        private void DrawRect(Rectangle rect, Color color, float layer)
+        {
+            _spriteBatch.Draw(collisionTexture, rect, null, color, 0, Vector2.Zero, SpriteEffects.None, layer);
         }
 
         private void DrawMapBoundary(Rectangle rect)

@@ -20,7 +20,7 @@ namespace strategyGame.Classes
         Random random;
         private string owner;
         private Color color;
-        private bool bonus;
+        private bool bonus; //TODO: rename bonus variables
         private int bonusDistance;
 
         private List<Building> buildingList = new List<Building>();
@@ -40,8 +40,8 @@ namespace strategyGame.Classes
         {
             ArrayPosition = new Vector2(x, y);
             random = new Random();
-            GenerateProvince();
             this.sprite = sprite;
+            GenerateProvince();
             scale = MapHandler.ProvinceScale;
             layerDepth = 0.2f;
             Color = Color.White;
@@ -115,17 +115,16 @@ namespace strategyGame.Classes
         /// </summary>
         private void GenerateProvince()
         {
-            //chance of province giving more land in beginning
-            int bonusChance = random.Next(0, 15);
+            //chance of province giving more land
+            int bonusChance = random.Next(0, 25);
 
-            if (bonusChance == 0)
-            {
-                this.BonusDistance = 3;
-                this.bonus = true;
-            }
             prefix = GenerateName("prefix");
             name = GenerateName("name");
             suffix = GenerateName("suffix");
+            if (bonusChance == 0)
+            {
+                this.GetBonus();
+            }
         }
 
         /// <summary>
@@ -173,28 +172,23 @@ namespace strategyGame.Classes
 
         /// <summary>
         /// Changes the province to a capital province
-        /// <br>Suffix = City</br>
-        /// <br>Bonus = True</br>
-        /// <br>BonusDistnace = 15</br
         /// </summary>
         public void SetCapital()
         {
             this.suffix = "City";
             this.bonus = true;
-            this.bonusDistance = 15;
+            this.bonusDistance = 10;
         }
 
         /// <summary>
         /// Changes the province to a bonus province
-        /// <br>Suffix = Town</br>
-        /// <br>Bonus = True</br>
-        /// <br>BonusDistnace = 3</br>
         /// </summary>
         public void GetBonus()
         {
+            this.sprite = MapHandler.Sprites[1];
             this.suffix = "Town";
             this.bonus = true;
-            this.bonusDistance = 3;
+            this.bonusDistance = 4;
         }
     }
 }
