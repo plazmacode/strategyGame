@@ -15,6 +15,7 @@ namespace strategyGame.Classes
         private static SpriteFont arial;
         private static MouseState mouseState;
         private static KeyboardState keyState;
+        private static float zoomScale;
         private FrameCounter _frameCounter = new FrameCounter();
 
         public static List<GameObject> gameObjects = new List<GameObject>();
@@ -31,6 +32,7 @@ namespace strategyGame.Classes
 
         private static Vector2 screenSize;
         private static Vector2 oldScreenSize;
+        private static Vector2 cameraPosition;
 
 
         public static List<UIElement> UIListProp { get => UIList; set => UIList = value; }
@@ -40,6 +42,8 @@ namespace strategyGame.Classes
         public static SpriteFont Arial { get => arial; set => arial = value; }
         public static Vector2 OldScreenSize { get => oldScreenSize; set => oldScreenSize = value; }
         public static KeyboardState KeyStateProp { get => keyState; set => keyState = value; }
+        public static float ZoomScale { get => zoomScale; set => zoomScale = value; }
+        public static Vector2 CameraPosition { get => cameraPosition; set => cameraPosition = value; }
 
         public GameWorld()
         {
@@ -73,8 +77,7 @@ namespace strategyGame.Classes
         protected override void Initialize()
         {
             arial = Content.Load<SpriteFont>("arial");
-
-
+            cameraPosition = Vector2.Zero;
             PlayerHandler.CreatePlayers();
             UIHandler.LoadUI();
 
@@ -180,11 +183,11 @@ namespace strategyGame.Classes
                 DrawRect(new Rectangle((int)mouseHover.X, (int)mouseHover.Y, (int)Arial.MeasureString(text).X+12,24),Color.Gray,0.6f);
             }
 
-
+            DebugTexts.Add(ZoomScale.ToString());
             //Draw extra debug texts
             for (int i = 0; i < DebugTexts.Count; i++)
             {
-                _spriteBatch.DrawString(Arial, DebugTexts[i], new Vector2(0, 160 + i * 24), Color.DarkRed, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                _spriteBatch.DrawString(Arial, DebugTexts[i], new Vector2(0, 240 + i * 24), Color.DarkRed, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
             }
             DebugTexts.Clear();
 
@@ -201,8 +204,8 @@ namespace strategyGame.Classes
             int lineWidth = 5;
             Color color = Color.DarkGray;
 
-            //rect.X = rect.X - (int)ScreenSize.X / 2;
-            //rect.Y = rect.Y - (int)ScreenSize.Y / 2;
+            //rect.X = rect.X + (int)CameraPosition.X;
+            //rect.Y = rect.Y + (int)CameraPosition.Y;
 
             Rectangle topLine = new Rectangle(rect.X - lineWidth, rect.Y - lineWidth, rect.Width + lineWidth*2, lineWidth);
             Rectangle bottomLine = new Rectangle(rect.X, rect.Y + rect.Height, rect.Width, lineWidth);

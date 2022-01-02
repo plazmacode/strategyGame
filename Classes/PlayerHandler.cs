@@ -9,9 +9,15 @@ namespace strategyGame.Classes
     public static class PlayerHandler
     {
         private static KeyboardState oldKeyState;
+        private static float cameraSpeed;
         private static Dictionary<string,Player> playerList = new Dictionary<string,Player>();
 
         public static Dictionary<string, Player> PlayerList { get => playerList; set => playerList = value; }
+
+        static PlayerHandler()
+        {
+            cameraSpeed = 10;
+        }
 
         public static void CreatePlayers()
         {
@@ -49,7 +55,50 @@ namespace strategyGame.Classes
                     MapHandler.HightlightProp.SelectedProvince.SetBonus(100, "town");
                 }
             }
+
+            UpdateCamera();
+
             oldKeyState = GameWorld.KeyStateProp;
+        }
+
+        public static void UpdateCamera()
+        {
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.Left))
+            {
+                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X + cameraSpeed, GameWorld.CameraPosition.Y);
+                MapHandler.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.Right))
+            {
+                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X - cameraSpeed, GameWorld.CameraPosition.Y);
+                MapHandler.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.Up))
+            {
+                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y + cameraSpeed);
+                MapHandler.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
+            if (GameWorld.KeyStateProp.IsKeyDown(Keys.Down))
+            {
+                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y - cameraSpeed);
+                MapHandler.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
         }
     }
 }

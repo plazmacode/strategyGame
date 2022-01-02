@@ -25,6 +25,27 @@ namespace strategyGame.Classes
 
         public static void UpdateUI()
         {
+            if (GameWorld.MouseStateProp.ScrollWheelValue > oldState.ScrollWheelValue)
+            {
+                GameWorld.ZoomScale *= 1.1f;
+                MapHandler.OnResize();
+                MapHandler.HightlightProp.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
+            else if (GameWorld.MouseStateProp.ScrollWheelValue < oldState.ScrollWheelValue)
+            {
+                GameWorld.ZoomScale /= 1.1f;
+                MapHandler.OnResize();
+                MapHandler.HightlightProp.OnResize();
+                foreach (Province province in MapHandler.Map)
+                {
+                    province.OnResize();
+                }
+            }
+
             //TODO make this code better looking
             foreach (UIElement ui in GameWorld.UIListProp)
             {
@@ -80,6 +101,7 @@ namespace strategyGame.Classes
                     ui.Text = "";
                 }
             }
+            oldState = GameWorld.MouseStateProp;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,9 +30,12 @@ namespace strategyGame.Classes
 
         public static Vector2 Offset { get => offset; set => offset = value; }
         internal static Province[,] Map { get => map; set => map = value; }
-        public static Vector2 OldOffset { get => oldOffset; set => oldOffset = value; }
+        public static Vector2 OldOffset { get => oldOffset; set => oldOffset = value; } //Unused???
         public static Rectangle MapRect { get => mapRect; set => mapRect = value; }
         public static Hightlight HightlightProp { get => hightlight; set => hightlight = value; }
+        /// <summary>
+        /// spriteSize * provinceScale * ZoomScale
+        /// </summary>
         public static int ProvinceSize { get => provinceSize; set => provinceSize = value; }
         public static List<string> GenericNameList { get => genericNameList; set => genericNameList = value; }
         public static List<string> PrefixList { get => prefixList; set => prefixList = value; }
@@ -45,8 +49,10 @@ namespace strategyGame.Classes
 
         static MapHandler()
         {
-            Map = new Province[80, 60]; //Exceed 160x100 and it might start lagging, depending on province texture
+
+            Map = new Province[100, 80]; //Exceed 160x100 and it might start lagging, depending on province texture
             MapActive = false; //Used for highlight
+            GameWorld.ZoomScale = 1f;
             provinceScale = 1f;
             GameWorld.Instantiate(HightlightProp);
             LoadNames();
@@ -89,9 +95,22 @@ namespace strategyGame.Classes
             GenericNameList.Add("Elm");
 
             //real names
+            RealNameList.Add("New York");
+            RealNameList.Add("Los Angeles");
+            RealNameList.Add("Shenzen");
+            RealNameList.Add("Lahore");
             RealNameList.Add("York");
             RealNameList.Add("Amsterdam");
             RealNameList.Add("Copenhagen");
+            RealNameList.Add("Shanghai");
+            RealNameList.Add("Sydney");
+            RealNameList.Add("Melbourne");
+            RealNameList.Add("Sao Paulo");
+            RealNameList.Add("Mexico");
+            RealNameList.Add("Mumbai");
+            RealNameList.Add("Dhaka");
+            RealNameList.Add("Osaka");
+            RealNameList.Add("Chongqing");
             RealNameList.Add("Berlin");
             RealNameList.Add("London");
             RealNameList.Add("Istanbul");
@@ -141,20 +160,22 @@ namespace strategyGame.Classes
                 //For extra small use collisionTexture
                 Sprites[i] = content.Load<Texture2D>("provinceSmall" + i);
             }
-            ProvinceSize = (int)(Sprites[0].Width * provinceScale); //assuming all provinces are squares and have same size as first province texture
+            hightlight.OnResize(); //Fixes size of highlight based on sprite size chosen
+            ProvinceSize = (int)(Sprites[0].Width * provinceScale * GameWorld.ZoomScale); //assuming all provinces are squares and have same size as first province texture
         }
 
         public static void OnResize()
         {
+            ProvinceSize = (int)(Sprites[0].Width * provinceScale * GameWorld.ZoomScale); //assuming all provinces are squares and have same size as first province texture
             oldOffset = offset;
-            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * (int)(provinceSize * provinceScale) / 2,
-                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * (int)(provinceSize * provinceScale) / 2));
-            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
-
+            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2,
+                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2)) + (GameWorld.CameraPosition * GameWorld.ZoomScale);
+            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
         }
 
         public static void ClearMap()
         {
+            //GameWorld.CameraPosition = Vector2.Zero;
             foreach (GameObject obj in GameWorld.gameObjects)
             {
                 if (obj is Province)
@@ -166,9 +187,10 @@ namespace strategyGame.Classes
 
         public static void Build()
         {
-            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * (int)(provinceSize * provinceScale) / 2,
-                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * (int)(provinceSize * provinceScale) / 2));
-            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * (int)(provinceSize * provinceScale), map.GetLength(1) * (int)(provinceSize * provinceScale));
+            offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2,
+                (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
+            offset = offset + (GameWorld.CameraPosition * GameWorld.ZoomScale);
+            MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
 
             for (int i = 0; i < Map.GetLength(0); i++)
             {
@@ -177,8 +199,8 @@ namespace strategyGame.Classes
                     int x =  i;
                     int y = j;
                     Province province = new Province(x, y, Sprites[0]); //x, y sends the position in the map[] array
-                    province.Position = new Vector2((int)(provinceScale * provinceSize) * x, (int)(provinceScale * provinceSize) * y) + Offset; //x, y sets the correct position
-                    province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, (int)(ProvinceSize * provinceScale), (int)(ProvinceSize * provinceScale));
+                    province.Position = new Vector2(provinceSize * x, provinceSize * y) + Offset; //x, y sets the correct position
+                    province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, provinceSize, provinceSize);
                     Map[i, j] = province;
                     GameWorld.Instantiate(province);
                 }

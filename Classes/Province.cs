@@ -58,11 +58,19 @@ namespace strategyGame.Classes
         {
 
         }
-
+        /// <summary>
+        /// Updates position and provinceRect
+        /// </summary>
         public void OnResize()
         {
-            Position = Position - MapHandler.OldOffset + MapHandler.Offset;
-            ProvinceRect = new Rectangle((int)Position.X, (int)Position.Y, (int)(MapHandler.ProvinceSize * MapHandler.ProvinceScale), (int)(MapHandler.ProvinceSize * MapHandler.ProvinceScale));
+            //TODO: Call this function less
+            //Moving the map causes lag, as each frame the game has to update every province position
+            //Potential fix would be to keep the position,
+            //but only change the Draw() to position + GameWorld.CameraPosition.
+            //However, the highlight of provinces would then also need changing as it currently stops working with the current logic
+            //scale = MapHandler.ProvinceScale;
+            position = new Vector2(MapHandler.ProvinceSize * arrayPosition.X, MapHandler.ProvinceSize * arrayPosition.Y) + MapHandler.Offset;
+            ProvinceRect = new Rectangle((int)Position.X, (int)Position.Y, MapHandler.ProvinceSize, MapHandler.ProvinceSize);
         }
 
         public override void Update(GameTime gameTime)
@@ -73,7 +81,7 @@ namespace strategyGame.Classes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, Position, null, Color, rotation, origin, MapHandler.ProvinceScale, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(sprite, Position, null, Color, rotation, origin, scale * GameWorld.ZoomScale, SpriteEffects.None, layerDepth);
         }
 
         private void CheckHighlight()
@@ -140,7 +148,7 @@ namespace strategyGame.Classes
             if (type == "name")
             {
                 int realNameChance = random.Next(0, 100);
-                if (realNameChance < 3)
+                if (realNameChance < 4)
                 {
                     return MapHandler.RealNameList[randomRealName];
                 } else
