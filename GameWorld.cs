@@ -11,10 +11,8 @@ namespace strategyGame.Classes
     {
 
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private static SpriteBatch _spriteBatch;
         private static SpriteFont arial;
-        private static MouseState mouseState;
-        private static KeyboardState keyState;
         private static float zoomScale;
         private FrameCounter _frameCounter = new FrameCounter();
 
@@ -22,26 +20,22 @@ namespace strategyGame.Classes
         private static List<GameObject> newGameObjects = new List<GameObject>();
         private static List<GameObject> removeGameObjects = new List<GameObject>();
 
-        private static List<UIElement> UIList = new List<UIElement>();
+
 
 
         private static List<string> debugTexts = new List<string>();
 
-        private Texture2D collisionTexture;
-        private Texture2D backgroundImage;
+        private static Texture2D collisionTexture;
 
         private static Vector2 screenSize;
         private static Vector2 oldScreenSize;
         private static Vector2 cameraPosition;
 
 
-        public static List<UIElement> UIListProp { get => UIList; set => UIList = value; }
         public static Vector2 ScreenSize { get => screenSize; set => screenSize = value; }
-        public static MouseState MouseStateProp { get => mouseState; set => mouseState = value; }
         public static List<string> DebugTexts { get => debugTexts; set => debugTexts = value; }
         public static SpriteFont Arial { get => arial; set => arial = value; }
         public static Vector2 OldScreenSize { get => oldScreenSize; set => oldScreenSize = value; }
-        public static KeyboardState KeyStateProp { get => keyState; set => keyState = value; }
         public static float ZoomScale { get => zoomScale; set => zoomScale = value; }
         public static Vector2 CameraPosition { get => cameraPosition; set => cameraPosition = value; }
 
@@ -69,7 +63,7 @@ namespace strategyGame.Classes
                 province.OnResize();
             }
 
-            foreach (UIElement ui in UIList)
+            foreach (UIElement ui in UIHandler.UIListProp)
             {
                 //Updates the position of UI elements
                 ui.UpdatePosition();
@@ -107,9 +101,8 @@ namespace strategyGame.Classes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            MouseStateProp = Mouse.GetState();
-            KeyStateProp = Keyboard.GetState();
 
+            InputHandler.Update();
             PlayerHandler.UpdatePlayers(gameTime);
             MapHandler.Update();
 
@@ -144,7 +137,9 @@ namespace strategyGame.Classes
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _spriteBatch.DrawString(Arial, fps, new Vector2(0, 16), Color.White,
                 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
-            _spriteBatch.DrawString(GameWorld.Arial, mouseState.Position.ToString(), new Vector2(0, screenSize.Y - 48), Color.White,
+
+            //mouse position
+            _spriteBatch.DrawString(Arial, InputHandler.MouseStateProp.Position.ToString(), new Vector2(0, screenSize.Y - 48), Color.White,
                 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
             //GameObjects
@@ -165,14 +160,10 @@ namespace strategyGame.Classes
             DrawMapBoundary(MapHandler.MapRect);
 
             //UI
-            Vector2 mouseHover = new Vector2(mouseState.Position.X -20, mouseState.Position.Y -30);
+            Vector2 mouseHover = new Vector2(InputHandler.MouseStateProp.Position.X -20, InputHandler.MouseStateProp.Position.Y - 30);
 
             UIHandler.UpdateUI();
-
-            foreach (UIElement ui in UIList)
-            {
-                _spriteBatch.DrawString(Arial, ui.StaticText + ui.Text, ui.Position, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
-            }
+            UIHandler.DrawTexts(_spriteBatch);
 
             //show province name on hover
             //TODO: Hold ctrl or shift for more info
@@ -197,7 +188,7 @@ namespace strategyGame.Classes
             _spriteBatch.End();
         }
 
-        private void DrawRect(Rectangle rect, Color color, float layer)
+        public static void DrawRect(Rectangle rect, Color color, float layer)
         {
             _spriteBatch.Draw(collisionTexture, rect, null, color, 0, Vector2.Zero, SpriteEffects.None, layer);
         }

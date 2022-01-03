@@ -6,6 +6,9 @@ using System.Text;
 
 namespace strategyGame.Classes
 {
+    /// <summary>
+    /// This class contains the functionality of a player. For more, check the PlayerHandler
+    /// </summary>
     public class Player
     {
         private Random random;
@@ -32,8 +35,8 @@ namespace strategyGame.Classes
         /// <summary>
         /// Creates a player with a color, name and random position
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="name"></param>
+        /// <param name="color">The color on the map</param>
+        /// <param name="name">The name of the player</param>
         public Player(Color color, string name)
         {
             //x and y is set somewhere else
@@ -45,10 +48,10 @@ namespace strategyGame.Classes
         /// <summary>
         /// Creates a player with a color, name and a position on the map
         /// </summary>
-        /// <param name="color"></param>
-        /// <param name="name"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="color">The color on the map</param>
+        /// <param name="name">The name of the player</param>
+        /// <param name="x">The X coord on the MapHandler.Map array</param>
+        /// <param name="y">The Y coord on the MapHandler.Map array</param>
         public Player(Color color, string name, int x, int y)
         {
             this.X = x;
@@ -56,11 +59,6 @@ namespace strategyGame.Classes
             this.Name = name;
             this.Color = color;
             SpreadTime = 1; //lower value = faster map generation but more lag
-        }
-
-        public  void LoadContent(ContentManager content)
-        {
-
         }
 
         public void Update(GameTime gameTime)

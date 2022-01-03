@@ -52,7 +52,7 @@ namespace strategyGame.Classes
         static MapHandler()
         {
 
-            Map = new Province[100, 80]; //Exceed 160x100 and it might start lagging, depending on province texture
+            Map = new Province[70, 50]; //Exceed 100x80 and it might start lagging, depending on province texture
             MapActive = false; //Used for highlight
             GameWorld.ZoomScale = 1f;
             provinceScale = 1f;
@@ -192,7 +192,7 @@ namespace strategyGame.Classes
             generatingMap = true;
             offset = new Vector2(GameWorld.ScreenSize.X / 2 - Map.GetLength(0) * provinceSize / 2,
                 (GameWorld.ScreenSize.Y / 2 - Map.GetLength(1) * provinceSize / 2));
-            offset = offset + (GameWorld.CameraPosition * GameWorld.ZoomScale);
+            offset += (GameWorld.CameraPosition * GameWorld.ZoomScale);
             MapRect = new Rectangle((int)offset.X, (int)offset.Y, map.GetLength(0) * provinceSize, map.GetLength(1) * provinceSize);
 
             for (int i = 0; i < Map.GetLength(0); i++)
@@ -201,8 +201,8 @@ namespace strategyGame.Classes
                 {
                     int x =  i;
                     int y = j;
-                    Province province = new Province(x, y, Sprites[0]); //x, y sends the position in the map[] array
-                    province.Position = new Vector2(provinceSize * x, provinceSize * y) + Offset; //x, y sets the correct position
+                    Province province = new Province(x, y, Sprites[0]);
+                    province.Position = new Vector2(provinceSize * x, provinceSize * y) + Offset; //x, y sets the correct position in the map array
                     province.ProvinceRect = new Rectangle((int)province.Position.X, (int)province.Position.Y, provinceSize, provinceSize);
                     Map[i, j] = province;
                     GameWorld.Instantiate(province);
@@ -222,7 +222,7 @@ namespace strategyGame.Classes
 
         public static void Update()
         {
-            if (MapHandler.MapRect.Contains(GameWorld.MouseStateProp.Position))
+            if (MapHandler.MapRect.Contains(InputHandler.MouseStateProp.Position))
             {
                 MapActive = true;
             }

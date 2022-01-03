@@ -19,10 +19,10 @@ namespace strategyGame.Classes
         private string suffix;
         Random random;
         private string owner;
-        private Color color;
         private bool bonus; //TODO: rename bonus variables
         private int bonusDistance;
         private bool canSpread;
+        private bool isCapital;
 
         private List<Building> buildingList = new List<Building>();
 
@@ -37,6 +37,7 @@ namespace strategyGame.Classes
         public string Prefix { get => prefix; set => prefix = value; }
         public string Suffix { get => suffix; set => suffix = value; }
         public bool CanSpread { get => canSpread; set => canSpread = value; }
+        public bool IsCapital { get => isCapital; set => isCapital = value; }
 
         public Province(int x, int y, Texture2D sprite)
         {
@@ -73,6 +74,28 @@ namespace strategyGame.Classes
             //scale = MapHandler.ProvinceScale;
             position = new Vector2(MapHandler.ProvinceSize * arrayPosition.X, MapHandler.ProvinceSize * arrayPosition.Y) + MapHandler.Offset;
             ProvinceRect = new Rectangle((int)Position.X, (int)Position.Y, MapHandler.ProvinceSize, MapHandler.ProvinceSize);
+            UpdateCapitalText();
+        }
+
+        public void UpdateCapitalText()
+        {
+            foreach (UIElement ui in UIHandler.PlayerTextList)
+            {
+                if (ui.Type == "playerText" && ui.Name == this.Owner && this.IsCapital)
+                {
+                    ui.Position = this.Position;
+                    if (GameWorld.ZoomScale > 1.5)
+                    {
+                        ui.Position += new Vector2(-GameWorld.Arial.MeasureString(ui.StaticText).X / 2, -10);
+
+                    }
+                    else
+                    {
+                        ui.Position += new Vector2(-GameWorld.Arial.MeasureString(ui.Text).X / 2, -10 * GameWorld.ZoomScale);
+                    }
+                    ui.StaticText = this.Name;
+                }
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -100,11 +123,11 @@ namespace strategyGame.Classes
 
             if (MapHandler.MapActive)
             {
-                if (provinceRect.Contains(GameWorld.MouseStateProp.Position))
+                if (provinceRect.Contains(InputHandler.MouseStateProp.Position))
                 {
                     MapHandler.HightlightProp.Position = position;
                     MapHandler.HightlightProp.HoverProvince = this;
-                    if (GameWorld.MouseStateProp.LeftButton == ButtonState.Pressed)
+                    if (InputHandler.MouseStateProp.LeftButton == ButtonState.Pressed)
                     {
                         OnClick();
                     }
@@ -206,10 +229,12 @@ namespace strategyGame.Classes
             string t = type.ToLower();
             if (t == "capital")
             {
+                this.isCapital = true;
                 this.sprite = MapHandler.Sprites[3];
                 this.suffix = "City";
                 this.bonus = true;
                 this.bonusDistance = 8;
+                UpdateCapitalText();
             }
             if (t == "town" && randomNumber < chance)
             {
