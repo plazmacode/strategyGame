@@ -21,6 +21,7 @@ namespace strategyGame.Classes
         {
             //TODO make this more dynamic when creating many players, also add ai parameter
             playerList.Clear();
+            UIHandler.PlayerTextList.Clear();
 
             Player player1 = new Player(Color.Blue, "France");
             Player player2 = new Player(Color.Red, "England");
@@ -38,12 +39,12 @@ namespace strategyGame.Classes
             playerList.Add("player2", player2);
             playerList.Add("player3", player3);
             playerList.Add("player4", player4);
-            playerList.Add("player5", player5);
-            playerList.Add("player6", player6);
-            playerList.Add("player7", player7);
-            playerList.Add("player8", player8);
-            playerList.Add("player9", player9);
-            playerList.Add("player10", player10);
+            //playerList.Add("player5", player5);
+            //playerList.Add("player6", player6);
+            //playerList.Add("player7", player7);
+            //playerList.Add("player8", player8);
+            //playerList.Add("player9", player9);
+            //playerList.Add("player10", player10);
 
             foreach (Player player in playerList.Values)
             {

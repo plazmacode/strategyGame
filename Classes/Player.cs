@@ -88,9 +88,6 @@ namespace strategyGame.Classes
 
         private void Spread(GameTime gameTime)
         {
-            //TODO: "optimize"
-            //HOW:
-            //Only call this if MapHandler.Generating == true
             //When every province is looped through, check if they can spread to another province
             //if bool CanSpread = false on every province set generating to false
             if (gameTime.TotalGameTime.TotalMilliseconds >= this.nextSpread)

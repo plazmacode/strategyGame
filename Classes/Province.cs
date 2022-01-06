@@ -11,6 +11,7 @@ namespace strategyGame.Classes
 {
     class Province : GameObject
     {
+        private Texture2D[] sprites;
         private double controlledSince;
         private Rectangle provinceRect;
         private Vector2 arrayPosition;
@@ -93,7 +94,7 @@ namespace strategyGame.Classes
                     {
                         ui.Position += new Vector2(-GameWorld.Arial.MeasureString(ui.Text).X / 2, -10 * GameWorld.ZoomScale);
                     }
-                    ui.StaticText = this.Name;
+                    ui.StaticText = String.Format("{0} {1} {2}", prefix, name, suffix);
                 }
             }
         }
@@ -107,6 +108,7 @@ namespace strategyGame.Classes
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(sprite, Position, null, Color, rotation, origin, scale * GameWorld.ZoomScale, SpriteEffects.None, layerDepth);
+
         }
 
         private void CheckHighlight()
@@ -233,7 +235,7 @@ namespace strategyGame.Classes
                 this.sprite = MapHandler.Sprites[3];
                 this.suffix = "City";
                 this.bonus = true;
-                this.bonusDistance = 8;
+                this.bonusDistance = 3;
                 UpdateCapitalText();
             }
             if (t == "town" && randomNumber < chance)
@@ -241,14 +243,14 @@ namespace strategyGame.Classes
                 this.sprite = MapHandler.Sprites[2];
                 this.suffix = "Town";
                 this.bonus = true;
-                this.bonusDistance = 5;
+                this.bonusDistance = 2;
             }
             if (t == "village" && randomNumber < chance)
             {
                 this.sprite = MapHandler.Sprites[1];
                 this.suffix = "Village";
                 this.bonus = true;
-                this.bonusDistance = 3;
+                this.bonusDistance = 1;
             }
             if (this.Owner != null)
             {

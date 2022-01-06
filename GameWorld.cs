@@ -7,21 +7,19 @@ using System.Diagnostics;
 
 namespace strategyGame.Classes
 {
+    public enum GameState { Play, Choose, Win, Lose }
     public class GameWorld : Game
     {
-
         private GraphicsDeviceManager _graphics;
         private static SpriteBatch _spriteBatch;
         private static SpriteFont arial;
         private static float zoomScale;
         private FrameCounter _frameCounter = new FrameCounter();
+        private static GameState currentGameState;
 
         public static List<GameObject> gameObjects = new List<GameObject>();
         private static List<GameObject> newGameObjects = new List<GameObject>();
         private static List<GameObject> removeGameObjects = new List<GameObject>();
-
-
-
 
         private static List<string> debugTexts = new List<string>();
 
@@ -38,6 +36,7 @@ namespace strategyGame.Classes
         public static Vector2 OldScreenSize { get => oldScreenSize; set => oldScreenSize = value; }
         public static float ZoomScale { get => zoomScale; set => zoomScale = value; }
         public static Vector2 CameraPosition { get => cameraPosition; set => cameraPosition = value; }
+        public static GameState CurrentGameState { get => currentGameState; set => currentGameState = value; }
 
         public GameWorld()
         {
@@ -49,8 +48,8 @@ namespace strategyGame.Classes
             ScreenSize = new Vector2(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
-            //_graphics.SynchronizeWithVerticalRetrace = false; //Unlocks FPS
-            //this.IsFixedTimeStep = false;
+            _graphics.SynchronizeWithVerticalRetrace = false; //Unlocks FPS
+            this.IsFixedTimeStep = false;
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -72,6 +71,7 @@ namespace strategyGame.Classes
 
         protected override void Initialize()
         {
+            currentGameState = GameState.Play;
             arial = Content.Load<SpriteFont>("arial");
             cameraPosition = Vector2.Zero;
             //PlayerHandler.CreatePlayers();
@@ -102,7 +102,7 @@ namespace strategyGame.Classes
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            InputHandler.Update();
+            InputHandler.Update(gameTime);
             PlayerHandler.UpdatePlayers(gameTime);
             MapHandler.Update();
 
@@ -146,15 +146,6 @@ namespace strategyGame.Classes
             foreach (GameObject obj in gameObjects)
             {
                 obj.Draw(_spriteBatch);
-#if DEBUG
-                if (obj is Hightlight)
-                {
-
-                } else
-                {
-                    //DrawCollisionBox(obj);
-                }
-#endif
             }
 
             DrawMapBoundary(MapHandler.MapRect);

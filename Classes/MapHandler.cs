@@ -8,8 +8,10 @@ using System.Text;
 
 namespace strategyGame.Classes
 {
+    public enum MapMode { Normal, Terrain }
     public static class MapHandler
     {
+        private static MapMode currentMapMode;
         private static Rectangle mapRect;
         private static Province[,] map; //10x10 map
         private static Texture2D[] sprites;
@@ -48,11 +50,12 @@ namespace strategyGame.Classes
         public static List<string> GenericPrefixList { get => genericPrefixList; set => genericPrefixList = value; }
         public static List<string> GenericInfixList { get => genericInfixList; set => genericInfixList = value; }
         public static bool GeneratingMap { get => generatingMap; set => generatingMap = value; }
+        public static MapMode CurrentMapMode { get => currentMapMode; set => currentMapMode = value; }
 
         static MapHandler()
         {
 
-            Map = new Province[70, 50]; //Exceed 100x80 and it might start lagging, depending on province texture
+            Map = new Province[50, 50]; //Exceed 100x80 and it might start lagging, depending on province texture
             MapActive = false; //Used for highlight
             GameWorld.ZoomScale = 1f;
             provinceScale = 1f;
@@ -166,6 +169,9 @@ namespace strategyGame.Classes
             ProvinceSize = (int)(Sprites[0].Width * provinceScale * GameWorld.ZoomScale); //assuming all provinces are squares and have same size as first province texture
         }
 
+        /// <summary>
+        /// Resize the boundary of the map and its offset value
+        /// </summary>
         public static void OnResize()
         {
             ProvinceSize = (int)(Sprites[0].Width * provinceScale * GameWorld.ZoomScale); //assuming all provinces are squares and have same size as first province texture
@@ -210,6 +216,7 @@ namespace strategyGame.Classes
             }
             PlayerHandler.CreatePlayers();
 
+            //Add players to map
             foreach (Player player in PlayerHandler.PlayerList.Values)
             {
                 if (player.X != -1)

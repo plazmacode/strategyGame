@@ -112,14 +112,14 @@ namespace strategyGame.Classes
                 if (GameWorld.ZoomScale > 1.5)
                 {
                     //Show capital name
-                    GameWorld.DrawRect(new Rectangle((int)ui.Position.X, (int)ui.Position.Y, (int)GameWorld.Arial.MeasureString(ui.StaticText).X + 12, 24), Color.Gray * 0.5f, 0.6f);
-                    spriteBatch.DrawString(GameWorld.Arial, ui.StaticText, ui.Position, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
+                    GameWorld.DrawRect(new Rectangle((int)ui.Position.X, (int)ui.Position.Y, (int)GameWorld.Arial.MeasureString(ui.StaticText).X + 12, 24), Color.Gray * 0.7f, 0.6f);
+                    spriteBatch.DrawString(GameWorld.Arial, ui.StaticText, ui.Position, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
                 }
                 else
                 {
-                    //Show capital owner name
-                    GameWorld.DrawRect(new Rectangle((int)ui.Position.X, (int)ui.Position.Y, (int)GameWorld.Arial.MeasureString(ui.Text).X + 12, 24), Color.Gray * 0.5f, 0.6f);
-                    spriteBatch.DrawString(GameWorld.Arial, ui.Text, ui.Position, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
+                    ////Show capital owner name
+                    GameWorld.DrawRect(new Rectangle((int)ui.Position.X, (int)ui.Position.Y, (int)GameWorld.Arial.MeasureString(ui.Text).X + 12, 24), Color.Gray * 0.7f, 0.6f);
+                    spriteBatch.DrawString(GameWorld.Arial, ui.Text, ui.Position, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
                 }
             }
         }

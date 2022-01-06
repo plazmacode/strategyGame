@@ -18,6 +18,7 @@ namespace strategyGame.Classes
 
         private static Vector2 draggingPosition;
         private static float cameraSpeed;
+        private static Vector2 cameraVelocity;
 
 
         public static MouseState MouseStateProp { get => mouseState; set => mouseState = value; }
@@ -26,15 +27,15 @@ namespace strategyGame.Classes
         public static KeyboardState OldKeyState { get => oldKeyState; set => oldKeyState = value; }
 
         public static Vector2 DraggingPosition { get => draggingPosition; set => draggingPosition = value; }
-
+        public static float CameraSpeed { get => cameraSpeed; set => cameraSpeed = value; }
 
         static InputHandler()
         {
-            cameraSpeed = 10;
+            CameraSpeed = 500;
         }
 
 
-        public static void Update()
+        public static void Update(GameTime gameTime)
         {
             KeyStateProp = Keyboard.GetState();
             mouseState = Mouse.GetState();
@@ -53,30 +54,54 @@ namespace strategyGame.Classes
                 MapHandler.Build();
             }
             CameraInput();
+            CameraMovement(gameTime);
         }
 
-        public static void CameraInput()
+        private static void CameraMovement(GameTime gameTime)
         {
-            //Scrolling
-            if (mouseState.ScrollWheelValue > oldState.ScrollWheelValue)
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Update camera position
+            GameWorld.CameraPosition += cameraVelocity * CameraSpeed * deltaTime;
+
+            //Update OnResize positions
+            if (cameraVelocity != Vector2.Zero)
             {
-                GameWorld.ZoomScale *= 1.1f;
                 MapHandler.OnResize();
-                MapHandler.HightlightProp.OnResize();
                 foreach (Province province in MapHandler.Map)
                 {
                     province.OnResize();
                 }
             }
-            else if (mouseState.ScrollWheelValue < oldState.ScrollWheelValue)
+            cameraVelocity = Vector2.Zero;
+        }
+
+        /// <summary>
+        /// Camera input and camera zoom
+        /// </summary>
+        public static void CameraInput()
+        {
+            void UpdateOffset()
             {
-                GameWorld.ZoomScale /= 1.1f;
                 MapHandler.OnResize();
-                MapHandler.HightlightProp.OnResize();
                 foreach (Province province in MapHandler.Map)
                 {
                     province.OnResize();
                 }
+            }
+
+            //Scrolling for camera zoom
+            if (mouseState.ScrollWheelValue > oldState.ScrollWheelValue)
+            {
+                GameWorld.ZoomScale *= 1.1f;
+                MapHandler.HightlightProp.OnResize();
+                UpdateOffset();
+            }
+            else if (mouseState.ScrollWheelValue < oldState.ScrollWheelValue)
+            {
+                GameWorld.ZoomScale /= 1.1f;
+                MapHandler.HightlightProp.OnResize();
+                UpdateOffset();
             }
 
             //Mouse dragging
@@ -85,64 +110,43 @@ namespace strategyGame.Classes
                 draggingPosition = new Vector2(oldState.X - mouseState.Position.X,
                     oldState.Y - mouseState.Position.Y);
                 GameWorld.CameraPosition -= draggingPosition / GameWorld.ZoomScale;
-                MapHandler.OnResize();
-                UpdateOffsets();
+                UpdateOffset();
+
             }
 
             ///Arrow Keys & WASD
             if (keyState.IsKeyDown(Keys.Left))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X + cameraSpeed, GameWorld.CameraPosition.Y);
-                MapHandler.OnResize();
-                UpdateOffsets();
+                cameraVelocity += new Vector2(1, 0);
             }
             if (keyState.IsKeyDown(Keys.Right))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X - cameraSpeed, GameWorld.CameraPosition.Y);
-                MapHandler.OnResize();
-                UpdateOffsets();
+                cameraVelocity += new Vector2(-1, 0);
             }
             if (keyState.IsKeyDown(Keys.Up))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y + cameraSpeed);
-                UpdateOffsets();
+                cameraVelocity += new Vector2(0, 1);
             }
             if (keyState.IsKeyDown(Keys.Down))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y - cameraSpeed);
-                UpdateOffsets();                
+                cameraVelocity += new Vector2(0, -1);
             }
 
             if (keyState.IsKeyDown(Keys.A))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X + cameraSpeed, GameWorld.CameraPosition.Y);
-                MapHandler.OnResize();
-                UpdateOffsets();
+                cameraVelocity += new Vector2(1, 0);
             }
             if (keyState.IsKeyDown(Keys.D))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X - cameraSpeed, GameWorld.CameraPosition.Y);
-                MapHandler.OnResize();
-                UpdateOffsets();
+                cameraVelocity += new Vector2(-1, 0);
             }
             if (keyState.IsKeyDown(Keys.W))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y + cameraSpeed);
-                UpdateOffsets();
+                cameraVelocity += new Vector2(0, 1);
             }
             if (keyState.IsKeyDown(Keys.S))
             {
-                GameWorld.CameraPosition = new Vector2(GameWorld.CameraPosition.X, GameWorld.CameraPosition.Y - cameraSpeed);
-                UpdateOffsets();
-            }
-
-            void UpdateOffsets()
-            {
-                MapHandler.OnResize();
-                foreach (Province province in MapHandler.Map)
-                {
-                    province.OnResize();
-                }
+                cameraVelocity += new Vector2(0, -1);
             }
             oldState = mouseState;
             oldKeyState = keyState;

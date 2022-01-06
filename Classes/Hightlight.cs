@@ -37,6 +37,9 @@ namespace strategyGame.Classes
             
         }
 
+        /// <summary>
+        /// Only used when the size of provinces or zoomScale is resized, the position i always updated
+        /// </summary>
         public void OnResize()
         {
             if (MapHandler.Sprites[0].Name.Contains("Small"))
